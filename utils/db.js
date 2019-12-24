@@ -2,9 +2,9 @@ const Sequelize = require('sequelize');
 const redis = require('redis');
 const bluebird = require("bluebird");
 
+import CONFIG from '../config/config';
 
-
-const sequelize = new Sequelize('postgres://postgres:123qwe@localhost:5432/postgres', {
+const sequelize = new Sequelize(CONFIG.postgresql, {
   pool: {
     max: 5,
     min: 0,

@@ -35,11 +35,10 @@ router.post('/', function(req, res, next) {
       client.SETEXAsync(REG_COUNT_KEY, EXPIRE_DT, CNT)
         .then(rs=>{
           let u = req.body;
-          console.log(u);
           if(u && u.username && u.password && u.email) {
-            User.create(req.body).then( u => {
-              req.log.info("REGISTER NEW user registered", u);
-              res.send(u);
+            User.create(u).then( user => {
+              req.log.info("REGISTER NEW user registered", user);
+              res.send(user);
             }).catch( error => {
               req.log.error("REGISTER ERROR happened", x);
               let fields = error['fields']
