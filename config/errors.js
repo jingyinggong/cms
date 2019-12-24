@@ -26,7 +26,15 @@ const ERRORS = {
   40900: {
     error_code: 40900,
     msg: "账户已经存在"
-  },  
+  },
+  40901: {
+    error_code: 40901,
+    msg: "username已存在"
+  },
+  40902: {
+    error_code: 40902,
+    msg: "email已存在"
+  },
   42901: {
     error_code: 42901,
     msg: "你操作太频繁了"
@@ -42,7 +50,16 @@ const ERRORS = {
   50001: {
     error_code: 50001,
     msg: "cpatcha非同源，请勿各种瞎鼓捣。"
-  }
+  },
+  50002: {
+    error_code: 50002,
+    msg: "注册信息有误，重新填写。"
+  },
+  50003: {
+    error_code: 50003,
+    msg: "注册信息有误，重新填写。"
+  },
+
 }
 
 export default ERRORS;
