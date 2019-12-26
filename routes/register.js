@@ -2,6 +2,12 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt');
 
+const bcrypt = require('bcrypt');
+
+import CONFIG from '../config/config';
+
+
+
 import User from '../models/User';
 
 import db from '../utils/db';
@@ -13,6 +19,7 @@ import CONFIG from '../config/config';
 import Utils from '../utils/tools';
 
 const { client } = db;
+const { saltRounds } = CONFIG;
 
 const { PASS_SALT_ROUND } = CONFIG;
 
@@ -30,6 +37,7 @@ router.post('/', function(req, res, next) {
   let CNT = 1;
   let CNT_THREAD = 10;
   const EXPIRE_DT = 1000;
+  const REPEATED_ERROR = "SequelizeUniqueConstraintError";
 
 
   client.getAsync(REG_COUNT_KEY).then(cnt => {
