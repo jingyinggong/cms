@@ -59,6 +59,10 @@ const ERRORS = {
     error_code: 50003,
     msg: "注册信息有误，重新填写。"
   },
+  50004: {
+    error_code: 50004,
+    msg: "邮箱地址格式错误。"
+  }
 
 }
 

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var bcrypt = require('bcrypt');
 
 import User from '../models/User';
 
@@ -7,10 +8,18 @@ import db from '../utils/db';
 
 import ERRORS from '../config/errors';
 
+import CONFIG from '../config/config';
+
+import Utils from '../utils/tools';
+
 const { client } = db;
 
+const { PASS_SALT_ROUND } = CONFIG;
+
+const { isEmail } = Utils;
+
 const sendError = function(res, errorId) {
-  this.send({
+  res.send({
     error: ERRORS[errorId]
   });
 }
@@ -36,37 +45,41 @@ router.post('/', function(req, res, next) {
         .then(rs=>{
           let u = req.body;
           if(u && u.username && u.password && u.email) {
-            User.create(u).then( user => {
-              req.log.info("REGISTER NEW user registered", user);
-              res.send(user);
-            }).catch( error => {
-              req.log.error("REGISTER ERROR happened", x);
-              let fields = error['fields']
-              if(fields) {
-                if('username' in fields) {
-                  sendError(res, '40901');
-                } else if('email' in fields) {
-                  sendError(res, '40902');
-                } else {
-                  sendError(res, '40900');
-                }
-              }
-              res.send(x);
+            let isValidEmail = isEmail(u.email);
+            if(!isValidEmail) {
+              req.log.error("REGISTER NEW user email invalid");
+              sendError(res, '50004');
+              return;
+            }
+            let p = u.password;
+            bcrypt.hash(p, PASS_SALT_ROUND).then(function(hash) {
+              u.password = hash;
+              User.create(u).then( user => {
+                req.log.info("REGISTER NEW user registered", user);
+                res.send(user);
+              }).catch( error => {
+                console.log("REGISTER NEW user error happened", error);
+                req.log.error("REGISTER NEW user error happened, duplicated Username or password", error);
+                sendError(res, '40900');
+              });
+            }).catch(errBcrypt => {
+              req.log.error("REGISTER NEW user error happened, ERROR HAPPENED WHILE DOING THE BCRYPT", errBcrypt);
+              sendError(res, '50000');
             });
+            
           } else {
             console.log('ERRORS', ERRORS['50003']);
             sendError(res, '50003');
           }
         }).catch(err=>{
+          req.log.error("REGISTER NEW user error happened", err);
           console.log('err = ' + err);
         });
     }
   }).catch(err=>{
     console.log('error happend while query count from redis');
-  })
-
-
-  
+    req.log.error("REGISTER NEW user error happened", err);
+  });
   
 });
 
