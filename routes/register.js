@@ -1,12 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var bcrypt = require('bcrypt');
 
 const bcrypt = require('bcrypt');
-
-import CONFIG from '../config/config';
-
-
 
 import User from '../models/User';
 

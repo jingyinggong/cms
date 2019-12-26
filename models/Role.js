@@ -40,4 +40,5 @@ export const getAllRoles = function(req, res, next) {
   });
 }
 
+
 export default Role;
